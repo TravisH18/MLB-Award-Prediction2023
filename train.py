@@ -3,7 +3,6 @@ from tensorflow import keras
 from sklearn.model_selection import train_test_split
 import pandas as pd
 
-
 def get_model():
     # https://www.tensorflow.org/tutorials/load_data/pandas_dataframe 
     model = keras.Sequential([
@@ -17,7 +16,6 @@ def get_model():
 #Load data
 # 'MVP' is your target variable and you want to predict it
 df1 = pd.read_csv('2018_batting.csv')
-#df1.drop(columns=['Rk', 'Name', 'Age', 'Lg', 'Tm', 'Pos Summary','Name-additional'], axis=1)
 df2 = pd.read_csv('2019_batting.csv')
 df3 = pd.read_csv('2020_batting.csv')
 df4 = pd.read_csv('2021_batting.csv')

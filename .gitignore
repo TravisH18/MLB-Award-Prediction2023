@@ -28,3 +28,6 @@ MANIFEST
 
 # Data
 *.csv
+
+# Models
+*_model

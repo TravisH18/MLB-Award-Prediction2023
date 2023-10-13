@@ -5,9 +5,28 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
+print('GPU name: ', tf.config.experimental.list_physical_devices('GPU'))
 
-X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
 
+df1 = pd.read_csv('2018_batting.csv')
+#df1.drop(columns=['Rk', 'Name', 'Age', 'Lg', 'Tm', 'Pos Summary','Name-additional'], axis=1)
+df2 = pd.read_csv('2019_batting.csv')
+df3 = pd.read_csv('2020_batting.csv')
+df4 = pd.read_csv('2021_batting.csv')
+df5 = pd.read_csv('2022_batting.csv')
+#print(df1.head)
+combined_df = pd.concat([df1, df2, df3, df4, df5], ignore_index=True)
+combined_df = combined_df.dropna()
+#print(combined_df.head)
+
+X = combined_df.drop(['MVP', 'Name-additional'], axis=1)
+# features = np.array(X)
+# X = tf.convert_to_tensor(X.values)
+#y = combined_df['MVP']  # Target variable
+Y = combined_df['MVP']
+
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
+batch_size = 64
 # Define the RNN model
 model = keras.Sequential([
     keras.layers.LSTM(64, return_sequences=True, input_shape=(X_train.shape[1], 1)),
@@ -22,22 +41,21 @@ model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy']
 model.summary()
 
 # Define Linear Model
-model = tf.keras.Sequential([
-    tf.keras.layers.Input(shape=(X_train.shape[1],)),
-    tf.keras.layers.Dense(128, activation='relu'),
-    tf.keras.layers.Dense(64, activation='relu'),
-    tf.keras.layers.Dense(1, activation='sigmoid')
-])
+# model = keras.Sequential([
+#     tf.keras.layers.Input(shape=(X_train.shape[1],1)),
+#     tf.keras.layers.Dense(128, activation='relu'),
+#     tf.keras.layers.Dense(64, activation='relu'),
+#     tf.keras.layers.Dense(1, activation='sigmoid')
+# ])
 
-model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+# model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
-batch_size = 64  # Adjust as needed
-train_data = train_data.shuffle(buffer_size=len(X_train)).batch(batch_size)
-test_data = test_data.batch(batch_size)
+# model.summary()
 
 num_epochs = 10  # Adjust as needed
 
-model.fit(train_data, epochs=num_epochs)
+model.fit(X_train, Y_train, epochs=num_epochs, batch_size=batch_size)
 
-test_loss, test_accuracy = model.evaluate(test_data)
+test_loss, test_accuracy = model.evaluate(X_test, Y_test, batch_size=batch_size)
+model.save("tensorflowRNN_model")
 print(f'Accuracy: {test_accuracy}')

@@ -5,6 +5,7 @@ import pandas as pd
 
 
 def get_model():
+    # https://www.tensorflow.org/tutorials/load_data/pandas_dataframe 
     model = keras.Sequential([
         keras.layers.Dense(64, activation='relu', input_shape=(BATCH_SIZE, num_features)),
         keras.layers.Dense(32, activation='relu'),

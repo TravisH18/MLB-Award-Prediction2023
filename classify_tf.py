@@ -20,9 +20,6 @@ combined_df = combined_df.dropna()
 #print(combined_df.head)
 
 X = combined_df.drop(['MVP', 'Name-additional'], axis=1)
-# features = np.array(X)
-# X = tf.convert_to_tensor(X.values)
-#y = combined_df['MVP']  # Target variable
 Y = combined_df['MVP']
 
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
@@ -59,3 +56,9 @@ model.fit(X_train, Y_train, epochs=num_epochs, batch_size=batch_size)
 test_loss, test_accuracy = model.evaluate(X_test, Y_test, batch_size=batch_size)
 model.save("tensorflowRNN_model")
 print(f'Accuracy: {test_accuracy}')
+
+# df2023 = pd.read_csv('2023_batting.csv')
+# df2023 = df2023.dropna()
+
+# df2023 = df2023.drop(['MVP', 'Name-additional'], axis=1)
+# model.predict(df2023)
